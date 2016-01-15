@@ -1,0 +1,4 @@
+#Project files to ignore
+.vs
+*/bin
+*/obj
