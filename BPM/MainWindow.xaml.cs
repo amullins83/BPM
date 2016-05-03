@@ -8,6 +8,16 @@ namespace BPM {
   /// </summary>
   public partial class MainWindow : Window, INotifyPropertyChanged {
     /// <summary>
+    ///  The milliseconds in one minute.
+    /// </summary>
+    private const double OneMinute = 60000.0;
+
+    /// <summary>
+    ///  The highest BPM displayed.
+    /// </summary>
+    private const double MaxBPM = 999.9;
+    
+    /// <summary>
     ///  Captures the tempo tapped.
     /// </summary>
     private double bpm = 0.0;
@@ -46,17 +56,22 @@ namespace BPM {
     /// <param name="e">The event arguments (ignored).</param>
     private void TapButton_Click(object sender, RoutedEventArgs e) {
       var newTapTimes = new DateTime[3];
+      
       Array.Copy(tapTimes, 0, newTapTimes, 1, 2);
       tapTimes = newTapTimes;
       tapTimes[0] = DateTime.Now;
       if (tapTimes[1] != default(DateTime)) {
-        var lastInterval = (tapTimes[0] - tapTimes[1]).Milliseconds;
+        var lastInterval = (tapTimes[0] - tapTimes[1]).TotalMilliseconds;
         if (tapTimes[2] != default(DateTime)) {
-          var previousInterval = (tapTimes[1] - tapTimes[2]).Milliseconds;
+          var previousInterval = (tapTimes[1] - tapTimes[2]).TotalMilliseconds;
           lastInterval = (lastInterval + previousInterval) / 2;
         }
 
-        bpm = 60000.0 / lastInterval;
+        if (lastInterval > OneMinute / MaxBPM) {
+          bpm = OneMinute / lastInterval;
+        } else {
+          bpm = MaxBPM;
+        }
         OnPropertyChanged("Bpm");
       }
     }
