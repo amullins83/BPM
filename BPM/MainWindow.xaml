@@ -5,7 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BPM"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:resource="clr-namespace:BPM.Resources"
+        Title="{x:Static resource:BpmStrings.Title}" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary>
+            <LinearGradientBrush x:Key="TapButtonDefaultBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#FF707070" Offset="0"/>
+                <GradientStop Color="#FF000000" Offset="0.5"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="TapButtonHoverBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#FFA0A0A0" Offset="0"/>
+                <GradientStop Color="#FF303030" Offset="0.5"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="TapButtonActiveBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#FF303030" Offset="0.5"/>
+                <GradientStop Color="#FFA0A0A0" Offset="1"/>
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -13,7 +30,63 @@
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding Bpm}" FontSize="48" HorizontalAlignment="Center"/>
         <Button Name="TapButton" Grid.Row="1" Click="TapButton_Click">
-            <TextBlock Text="Tap" FontSize="72"/>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Grid>
+                                    <Border Background="{StaticResource TapButtonDefaultBrush}"/>
+                                    <Border Background="{StaticResource TapButtonHoverBrush}" x:Name="HoverBackground" Opacity="0"/>
+                                    <Border Background="{StaticResource TapButtonActiveBrush}" x:Name="ActiveBackground" Opacity="0"/>
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="ActiveBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="ActiveBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+            <Grid>
+                <TextBlock Text="{x:Static resource:BpmStrings.Tap}" FontSize="72" Foreground="LightGray" FontFamily="Segoe UI Black">
+                    <TextBlock.Effect>
+                        <DropShadowEffect ShadowDepth="1" Direction="315" Color="White" Opacity="1" BlurRadius="1"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Grid>
         </Button>
     </Grid>
 </Window>
